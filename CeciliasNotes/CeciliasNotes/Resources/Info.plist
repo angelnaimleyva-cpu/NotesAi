@@ -2,10 +2,27 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleAllowMixedLocalizations</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
 	<string>Cecilia's Notes</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Cecilia's Notes Notebook</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Owner</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>app.ceciliasnotes.notebook</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIcons</key>
@@ -785,68 +802,27 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
-	<!-- App Store validation requires document-type apps to declare
-	     HOW they open documents. This app IMPORTS: it reads the file
-	     once (DeepLinkRouter / FileWatcher) and copies the content
-	     into its own library — it never edits the document at its
-	     source. NO keeps today's behaviour: the system may hand us an
-	     Inbox copy, and originals are never touched. Do not flip to
-	     YES without auditing every open path for in-place semantics. -->
-	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
-	<key>CFBundleDocumentTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeName</key>
-			<string>Cecilia's Notes Notebook</string>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>LSHandlerRank</key>
-			<string>Owner</string>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>app.ceciliasnotes.notebook</string>
-			</array>
-		</dict>
-	</array>
-	<key>UTExportedTypeDeclarations</key>
-	<array>
-		<dict>
-			<key>UTTypeIdentifier</key>
-			<string>app.ceciliasnotes.notebook</string>
-			<key>UTTypeDescription</key>
-			<string>Cecilia's Notes Notebook</string>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.data</string>
-				<string>public.content</string>
-			</array>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>ceciliabook</string>
-				</array>
-			</dict>
-		</dict>
-	</array>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.productivity</string>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<false/>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_cn-sync._tcp</string>
+		<string>_cn-sync._udp</string>
+	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>Cecilia's Notes lets you photograph and insert images directly into your notes.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Cecilia's Notes uses the local network to sync notebooks with your nearby iPhone, iPad, or Mac — no cloud round-trip needed.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Cecilia's Notes records audio for your notes. Recordings are stored on your device and never uploaded.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Cecilia's Notes lets you insert photos from your photo library into your notes.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Cecilia's Notes transcribes your recordings locally on your device using Apple's speech recognition.</string>
-	<key>NSLocalNetworkUsageDescription</key>
-	<string>Cecilia's Notes uses the local network to sync notebooks with your nearby iPhone, iPad, or Mac — no cloud round-trip needed.</string>
-	<key>NSBonjourServices</key>
-	<array>
-		<string>_cn-sync._tcp</string>
-		<string>_cn-sync._udp</string>
-	</array>
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>app.ceciliasnotes.page</string>
@@ -877,7 +853,7 @@
 	<key>UIRequiresFullScreen</key>
 	<false/>
 	<key>UIStatusBarStyle</key>
-	<string>UIStatusBarStyleDefault</string>
+	<string></string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
@@ -893,9 +869,26 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
-	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/>
-	<key>CFBundleAllowMixedLocalizations</key>
-	<true/>
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+				<string>public.content</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>Cecilia's Notes Notebook</string>
+			<key>UTTypeIdentifier</key>
+			<string>app.ceciliasnotes.notebook</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>ceciliabook</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
 </dict>
 </plist>

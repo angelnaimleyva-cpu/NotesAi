@@ -158,9 +158,13 @@ extension ModelContainer {
         // CloudKit export loop is an iOS-side bug we can't recover
         // from on our own, but the user can route around it by
         // turning the database sync off from Settings → iCloud.
-        let disabledByUser = UserDefaults.standard.bool(
-            forKey: swiftDataCloudKitDisabledKey
-        )
+#if DEBUG
+let disabledByUser = true
+#else
+let disabledByUser = UserDefaults.standard.bool(
+    forKey: swiftDataCloudKitDisabledKey
+)
+#endif
 
         // Escape hatch 2: dirty-launch auto-fallback. If the
         // previous shutdown was abnormal (force-quit, watchdog kill,
