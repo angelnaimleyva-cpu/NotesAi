@@ -38,6 +38,9 @@ struct LassoOverlayView: View {
         StorageService.shared.container.mainContext
     }
     private var pageSize: CGSize { coordinateSpace.baseSize }
+    
+    @State private var selectionPreviewImage: UIImage?
+    @State private var showSelectionPreview = false
 
     @State private var lassoPoints: [CGPoint] = []
     @State private var isDragging: Bool = false
@@ -528,20 +531,44 @@ struct LassoOverlayView: View {
                 let badgeY = max(badgeRadius,
                                  min(pageSize.height - badgeRadius,
                                      displayed.minY - 24))
-                Button {
-                    LassoGroupOps.delete(selection: selection,
-                                         canvas: viewModel.canvasView,
-                                         context: modelContext)
-                } label: {
-                    Image(systemName: "trash.circle.fill")
-                        .font(.system(size: 26))
-                        .foregroundStyle(theme.accent)
-                        .background(Circle().fill(theme.surfaceElevated))
-                        .frame(width: 44, height: 44)
-                        .contentShape(Rectangle())
+                
+                VStack(spacing: 6) {
+
+                    Button {
+                        LassoGroupOps.delete(
+                            selection: selection,
+                            canvas: viewModel.canvasView,
+                            context: modelContext
+                        )
+                    } label: {
+                        Image(systemName: "trash.circle.fill")
+                            .font(.system(size: 26))
+                            .foregroundStyle(theme.accent)
+                            .background(Circle().fill(theme.surfaceElevated))
+                            .frame(width: 44, height: 44)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+
+                    Button {
+                        previewCurrentSelection()
+                        
+                    } label: {
+                        Image(systemName: "sparkles")                            .font(.system(size: 26))
+                            .foregroundStyle(theme.accent)
+                            .background(Circle().fill(theme.surfaceElevated))
+                            .frame(width: 44, height: 44)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Ask NotesAI")
+                    .sheet(isPresented: $showSelectionPreview) {
+                        if let selectionPreviewImage {
+                            SelectionPreviewSheet(image: selectionPreviewImage)
+                        }
+                    }
                 }
-                .buttonStyle(.plain)
-                .position(x: badgeX, y: badgeY)
+                .position(x: badgeX, y: badgeY + 25)
             }
 
             // Resize + rotation chrome — hidden for locked
@@ -934,5 +961,73 @@ struct LassoOverlayView: View {
         let a0 = atan2(v0.dy, v0.dx)
         let a1 = atan2(v1.dy, v1.dx)
         return a1 - a0
+    }
+    private func previewCurrentSelection() {
+        let bounds = selection.selectionBounds.integral
+
+        guard bounds.width > 1, bounds.height > 1 else {
+            print("No valid selection bounds")
+            return
+        }
+
+        guard let canvas = viewModel.canvasView else {
+            print("NotesAI: canvas is not available")
+            return
+        }
+
+        canvas.layoutIfNeeded()
+        
+
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = UIScreen.main.scale
+
+        let renderer = UIGraphicsImageRenderer(
+            size: bounds.size,
+            format: format
+        )
+
+        let image = renderer.image { context in
+            UIColor.white.setFill()
+            context.fill(
+                CGRect(
+                    origin: .zero,
+                    size: bounds.size
+                )
+            )
+
+            context.cgContext.translateBy(
+                x: -bounds.minX,
+                y: -bounds.minY
+            )
+
+            canvas.layer.render(in: context.cgContext)
+        }
+
+        selectionPreviewImage = image
+        showSelectionPreview = true
+    }
+}
+struct SelectionPreviewSheet: View {
+    let image: UIImage
+
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFit()
+                    .padding()
+            }
+            .navigationTitle("NotesAI Selection")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                }
+            }
+        }
     }
 }
